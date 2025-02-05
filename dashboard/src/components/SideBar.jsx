@@ -16,19 +16,19 @@ const Sidebar = () => {
 
   const { isAuthenticated, setIsAuthenticated } = useContext(Context);
 
-  const handleLogout = async () => {
-    await axios
-      .get("http://localhost:4000/api/v1/user/admin/logout", {
-        withCredentials: true,
-      })
-      .then((res) => {
-        toast.success(res.data.message);
+  const VITE_BASE_URL = import.meta.env.VITE_BASE_URL; // Get the base URL from .env
+
+const handleLogout = async () => {
+    try {
+        const { data } = await axios.get(`${VITE_BASE_URL}/api/v1/user/admin/logout`, {
+            withCredentials: true,
+        });
+        toast.success(data.message);
         setIsAuthenticated(false);
-      })
-      .catch((err) => {
-        toast.error(err.response.data.message);
-      });
-  };
+    } catch (err) {
+        toast.error(err.response?.data?.message || "Something went wrong");
+    }
+};
 
   const navigateTo = useNavigate();
 

@@ -10,7 +10,7 @@ const Biography = ({imageUrl}) => {
         <div className="banner">
           <h3>Biography</h3>
           <p>
-          <h5>Healthcare Medical Institute</h5> is a leading healthcare facility committed to providing 
+          <p>Healthcare Medical Institute</p> is a leading healthcare facility committed to providing 
           exceptional medical services with a focus on compassion, innovation, and personalized care.
           Founded with the vision to offer a comprehensive approach to health and wellness, 
           the institute combines state-of-the-art technology with a team of skilled professionals 

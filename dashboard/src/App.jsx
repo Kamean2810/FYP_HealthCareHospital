@@ -16,24 +16,22 @@ import "./App.css";
 const App = () => {
   const { isAuthenticated, setIsAuthenticated, admin, setAdmin } =
     useContext(Context);
+    const VITE_BASE_URL = import.meta.env.VITE_BASE_URL; 
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:4000/api/v1/user/admin/me",
-          {
-            withCredentials: true,
+    useEffect(() => {
+      const fetchUser = async () => {
+          try {
+              const { data } = await axios.get(`${VITE_BASE_URL}/api/v1/user/admin/me`, {
+                  withCredentials: true,
+              });
+              setIsAuthenticated(true);
+              setAdmin(data.user);
+          } catch (error) {
+              setIsAuthenticated(false);
+              setAdmin({});
           }
-        );
-        setIsAuthenticated(true);
-        setAdmin(response.data.user);
-      } catch (error) {
-        setIsAuthenticated(false);
-        setAdmin({});
-      }
-    };
-    fetchUser();
+      };
+      fetchUser();
   }, [isAuthenticated]);
 
   return (

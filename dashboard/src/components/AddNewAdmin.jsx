@@ -18,36 +18,47 @@ const AddNewAdmin = () => {
 
   const navigateTo = useNavigate();
 
-  const handleAddNewAdmin = async (e) => {
+  const VITE_BASE_URL = import.meta.env.VITE_BASE_URL; // Get the base URL from .env
+
+const handleAddNewAdmin = async (e) => {
     e.preventDefault();
     try {
-      await axios
-        .post(
-          "http://localhost:4000/api/v1/user/admin/addnew",
-          { firstName, lastName, email, phone, nic, dob, gender, password },
-          {
-            withCredentials: true,
-            headers: { "Content-Type": "application/json" },
-          }
-        )
-        .then((res) => {
-          toast.success(res.data.message);
-          setIsAuthenticated(true);
-          navigateTo("/");
-          setFirstName("");
-          setLastName("");
-          setEmail("");
-          setPhone("");
-          setNic("");
-          setDob("");
-          setGender("");
-          setPassword("");
-        });
-    } catch (error) {
-      toast.error(error.response.data.message);
-    }
-  };
+        const { data } = await axios.post(
+            `${VITE_BASE_URL}/api/v1/user/admin/addnew`, // Use VITE_BASE_URL dynamically
+            {
+                firstName,
+                lastName,
+                email,
+                phone,
+                nic,
+                dob,
+                gender,
+                password,
+            },
+            {
+                withCredentials: true,
+                headers: { "Content-Type": "application/json" },
+            }
+        );
 
+        toast.success(data.message);
+        setIsAuthenticated(true);
+        navigateTo("/");
+
+        // Reset form fields
+        setFirstName("");
+        setLastName("");
+        setEmail("");
+        setPhone("");
+        setNic("");
+        setDob("");
+        setGender("");
+        setPassword("");
+        
+    } catch (error) {
+        toast.error(error.response?.data?.message || "Something went wrong");
+    }
+};
   if (!isAuthenticated) {
     return <Navigate to={"/login"} />;
   }

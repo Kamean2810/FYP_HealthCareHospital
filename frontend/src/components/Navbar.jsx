@@ -5,23 +5,26 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { Context } from "../main";
 
+
 const Navbar = () => {
   const [show, setShow] = useState(false);
   const { isAuthenticated, setIsAuthenticated } = useContext(Context);
 
+  const VITE_BASE_URL = import.meta.env.VITE_BASE_URL; // Get the base URL from .env
+
   const handleLogout = async () => {
-    await axios
-      .get("http://localhost:4000/api/v1/user/patient/logout", {
+    try {
+      const { data } = await axios.get(`${VITE_BASE_URL}/api/v1/user/patient/logout`, {
         withCredentials: true,
-      })
-      .then((res) => {
-        toast.success(res.data.message);
-        setIsAuthenticated(false);
-      })
-      .catch((err) => {
-        toast.error(err.response.data.message);
       });
+      console.log(data); // Check the response to see if message is as expected
+      toast.success(data.message);
+      setIsAuthenticated(false); // Ensure the state is updated
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Something went wrong");
+    }
   };
+  
 
   const navigateTo = useNavigate();
 

@@ -7,20 +7,20 @@ import { Navigate } from "react-router-dom";
 const Doctors = () => {
   const [doctors, setDoctors] = useState([]);
   const { isAuthenticated } = useContext(Context);
+  const VITE_BASE_URL = import.meta.env.VITE_BASE_URL;
   useEffect(() => {
     const fetchDoctors = async () => {
-      try {
-        const { data } = await axios.get(
-          "http://localhost:4000/api/v1/user/doctors",
-          { withCredentials: true }
-        );
-        setDoctors(data.doctors);
-      } catch (error) {
-        toast.error(error.response.data.message);
-      }
+        try {
+            const { data } = await axios.get(`${VITE_BASE_URL}/api/v1/user/doctors`, {
+                withCredentials: true,
+            });
+            setDoctors(data.doctors);
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Something went wrong");
+        }
     };
     fetchDoctors();
-  }, []);
+}, []);
 
   if (!isAuthenticated) {
     return <Navigate to={"/login"} />;

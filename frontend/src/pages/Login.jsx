@@ -3,6 +3,7 @@ import React, { useContext, useState } from "react";
 import { toast } from "react-toastify";
 import { Context } from "../main";
 import { Link, useNavigate, Navigate } from "react-router-dom";
+import axiosInstance from "../utils/axiosInstance";
 
 const Login = () => {
   const { isAuthenticated, setIsAuthenticated } = useContext(Context);
@@ -13,30 +14,37 @@ const Login = () => {
 
   const navigateTo = useNavigate();
 
-  const handleLogin = async (e) => {
+  const VITE_BASE_URL = import.meta.env.VITE_BASE_URL; // Get the base URL from .env\
+  console.log(VITE_BASE_URL)
+
+const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      await axios
-        .post(
-          "http://localhost:4000/api/v1/user/login",
-          { email, password, confirmPassword, role: "Patient" },
-          {
-            withCredentials: true,
-            headers: { "Content-Type": "application/json" },
-          }
-        )
-        .then((res) => {
-          toast.success(res.data.message);
-          setIsAuthenticated(true);
-          navigateTo("/");
-          setEmail("");
-          setPassword("");
-          setConfirmPassword("");
-        });
+        const response = await axios.post(
+            `${VITE_BASE_URL}/api/v1/user/login`, // Use base URL directly
+            {
+                email,
+                password,
+                confirmPassword,
+                role: "Patient",
+            },
+            {
+                withCredentials: true,
+                headers: { "Content-Type": "application/json" },
+            }
+        );
+
+        toast.success(response.data.message);
+        setIsAuthenticated(true);
+        navigateTo("/");
+        setEmail("");
+        setPassword("");
+        setConfirmPassword("");
+
     } catch (error) {
-      toast.error(error.response.data.message);
+        toast.error(error.response?.data?.message || "Something went wrong");
     }
-  };
+};
 
   if (isAuthenticated) {
     return <Navigate to={"/"} />;

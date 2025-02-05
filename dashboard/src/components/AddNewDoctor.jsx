@@ -43,42 +43,50 @@ const AddNewDoctor = () => {
     };
   };
 
-  const handleAddNewDoctor = async (e) => {
+  const VITE_BASE_URL = import.meta.env.VITE_BASE_URL; // Get the base URL from .env
+
+const handleAddNewDoctor = async (e) => {
     e.preventDefault();
     try {
-      const formData = new FormData();
-      formData.append("firstName", firstName);
-      formData.append("lastName", lastName);
-      formData.append("email", email);
-      formData.append("phone", phone);
-      formData.append("password", password);
-      formData.append("nic", nic);
-      formData.append("dob", dob);
-      formData.append("gender", gender);
-      formData.append("doctorDepartment", doctorDepartment);
-      formData.append("docAvatar", docAvatar);
-      await axios
-        .post("http://localhost:4000/api/v1/user/doctor/addnew", formData, {
-          withCredentials: true,
-          headers: { "Content-Type": "multipart/form-data" },
-        })
-        .then((res) => {
-          toast.success(res.data.message);
-          setIsAuthenticated(true);
-          navigateTo("/");
-          setFirstName("");
-          setLastName("");
-          setEmail("");
-          setPhone("");
-          setNic("");
-          setDob("");
-          setGender("");
-          setPassword("");
-        });
+        const formData = new FormData();
+        formData.append("firstName", firstName);
+        formData.append("lastName", lastName);
+        formData.append("email", email);
+        formData.append("phone", phone);
+        formData.append("password", password);
+        formData.append("nic", nic);
+        formData.append("dob", dob);
+        formData.append("gender", gender);
+        formData.append("doctorDepartment", doctorDepartment);
+        formData.append("docAvatar", docAvatar);
+
+        const { data } = await axios.post(
+            `${VITE_BASE_URL}/api/v1/user/doctor/addnew`, // Use VITE_BASE_URL dynamically
+            formData,
+            {
+                withCredentials: true,
+                headers: { "Content-Type": "multipart/form-data" },
+            }
+        );
+
+        toast.success(data.message);
+        setIsAuthenticated(true);
+        navigateTo("/");
+
+        // Reset form fields
+        setFirstName("");
+        setLastName("");
+        setEmail("");
+        setPhone("");
+        setNic("");
+        setDob("");
+        setGender("");
+        setPassword("");
+        
     } catch (error) {
-      toast.error(error.response.data.message);
+        toast.error(error.response?.data?.message || "Something went wrong");
     }
-  };
+};
 
   if (!isAuthenticated) {
     return <Navigate to={"/login"} />;

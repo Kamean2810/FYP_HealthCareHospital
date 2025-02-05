@@ -15,24 +15,23 @@ import Login from "./Pages/Login";
 const App = () => {
   const { isAuthenticated, setIsAuthenticated, setUser } =
     useContext(Context);
+    const VITE_BASE_URL = import.meta.env.VITE_BASE_URL; // Get the base URL from .env
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:4000/api/v1/user/patient/me",
-          {
-            withCredentials: true,
+
+    useEffect(() => {
+      const fetchUser = async () => {
+          try {
+              const { data } = await axios.get(`${VITE_BASE_URL}/api/v1/user/patient/me`, {
+                  withCredentials: true,
+              });
+              setIsAuthenticated(true);
+              setUser(data.user);
+          } catch (error) {
+              setIsAuthenticated(false);
+              setUser({});
           }
-        );
-        setIsAuthenticated(true);
-        setUser(response.data.user);
-      } catch (error) {
-        setIsAuthenticated(false);
-        setUser({});
-      }
-    };
-    fetchUser();
+      };
+      fetchUser();
   }, [isAuthenticated]);
 
   return (

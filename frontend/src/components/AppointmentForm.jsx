@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
+
 const AppointmentForm = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -30,25 +31,27 @@ const AppointmentForm = () => {
     "ENT",
   ];
 
+  const VITE_BASE_URL = import.meta.env.VITE_BASE_URL;
   const [doctors, setDoctors] = useState([]);
   useEffect(() => {
     const fetchDoctors = async () => {
-      const { data } = await axios.get(
-        "http://localhost:4000/api/v1/user/doctor/addnew",
-        { withCredentials: true }
-      );
-      setDoctors(data.doctors);
-      console.log(data.doctors);
+        try {
+            const { data } = await axios.get(`${VITE_BASE_URL}/api/v1/user/doctor/addnew`);
+            setDoctors(data.doctors);
+            console.log(data.doctors);
+        } catch (error) {
+            console.error("Error fetching doctors:", error.response?.data?.message || error.message);
+        }
     };
+
     fetchDoctors();
-  }, []);
-  const handleAppointment = async (e) => {
-    e.preventDefault();
-    try {
+}, []);
+const handleAppointment = async (e) => {
+  e.preventDefault();
+  try {
       const hasVisitedBool = Boolean(hasVisited);
-      const { data } = await axios.post(
-        "http://localhost:4000/api/v1/appointment/post",
-        {
+
+      const { data } = await axios.post(`${VITE_BASE_URL}/api/v1/appointment/post`, {
           firstName,
           lastName,
           email,
@@ -62,30 +65,29 @@ const AppointmentForm = () => {
           doctor_lastName: doctorLastName,
           hasVisited: hasVisitedBool,
           address,
-        },
-        {
-          withCredentials: true,
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      });
+
       toast.success(data.message);
-      setFirstName(""),
-        setLastName(""),
-        setEmail(""),
-        setPhone(""),
-        setNic(""),
-        setDob(""),
-        setGender(""),
-        setAppointmentDate(""),
-        setDepartment(""),
-        setDoctorFirstName(""),
-        setDoctorLastName(""),
-        setHasVisited(""),
-        setAddress("");
-    } catch (error) {
-      toast.error(error.response.data.message);
-    }
-  };
+
+      // Reset form fields
+      setFirstName("");
+      setLastName("");
+      setEmail("");
+      setPhone("");
+      setNic("");
+      setDob("");
+      setGender("");
+      setAppointmentDate("");
+      setDepartment("");
+      setDoctorFirstName("");
+      setDoctorLastName("");
+      setHasVisited("");
+      setAddress("");
+
+  } catch (error) {
+      toast.error(error.response?.data?.message || "Something went wrong");
+  }
+};
 
   return (
     <>
