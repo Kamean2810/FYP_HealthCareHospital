@@ -1,5 +1,5 @@
 import express from "express";
-import { config } from "dotenv";
+import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import fileUpload from "express-fileupload";
@@ -10,7 +10,7 @@ import userRouter from "./router/userRouter.js";
 import appointmentRouter from "./router/appointmentRouter.js";
 
 const app = express();
-config({path: "./config/config.env"});
+dotenv.config();
 
 app.use(
     cors({
@@ -22,7 +22,7 @@ app.use(
 );
 
 app.get("/",(req,res)=>{
-  res.send("Hello World")
+  res.send("Hello World...!")
 })
 
 app.use(cookieParser());
