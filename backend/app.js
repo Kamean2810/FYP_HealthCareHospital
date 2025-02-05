@@ -21,6 +21,10 @@ app.use(
 
 );
 
+app.get("/",(req,res)=>{
+  res.send("Hello World")
+})
+
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
